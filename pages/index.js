@@ -4,7 +4,7 @@ export default function NotionKnowledgeAgent() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Hi! I'm here to help you with your website roadmap and lead generation strategy. I have access to your complete strategic documentation and can answer questions, provide specific steps, share resources, and guide you through implementation.\n\nWhat would you like to know about?"
+      content: "Hi! I'm here to help you with your website roadmap and lead generation strategy. Ask me anything!"
     }
   ]);
   const [input, setInput] = useState('');
@@ -23,45 +23,28 @@ export default function NotionKnowledgeAgent() {
       
       if (data.content && data.content.trim().length > 0) {
         setNotionKnowledgeBase(data.content);
-        console.log('Loaded Notion content successfully');
       } else {
         setNotionKnowledgeBase(getDemoContent());
-        console.log('Using demo content - Notion not connected');
       }
     } catch (error) {
-      console.error('Failed to load Notion content:', error);
       setNotionKnowledgeBase(getDemoContent());
-      console.log('Using demo content - Connection failed');
     } finally {
       setLoadingNotion(false);
     }
   };
 
   const getDemoContent = () => {
-    return `# Website Optimization & Lead Generation Roadmap
+    return `# Website Optimization Roadmap
 
-## Phase 1: Discovery & Audit
+## Speed Optimization
+Tools: Google PageSpeed Insights
+Steps: Run tests, identify issues, prioritize fixes
 
-### Website Speed Analysis
-Tools to use:
-- Google PageSpeed Insights: https://pagespeed.web.dev
-- GTmetrix: https://gtmetrix.com
+## SEO Foundation
+Focus on meta descriptions, alt text, internal links
 
-## Phase 2: Foundation Optimization
-
-### Technical SEO Fixes
-Common issues to address:
-- Missing or duplicate meta descriptions
-- Broken internal links
-- Missing alt text on images
-
-## Phase 3: Conversion Optimization
-
-### Landing Page Design
-Key elements of high-converting landing pages:
-- Clear, benefit-driven headline
-- Strong CTA button
-- Social proof`;
+## Conversion
+Create compelling landing pages with clear CTAs`;
   };
 
   const handleSend = async () => {
@@ -83,23 +66,13 @@ Key elements of high-converting landing pages:
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `You are a helpful assistant for a website optimization and lead generation consultancy. You have access to the client's strategic roadmap documentation.
-
-Your job is to:
-1. Answer questions using the information from the documentation below
-2. Provide specific action steps when asked
-3. Share relevant links and resources from the documentation
-4. Be encouraging and actionable
-
-Here is the complete documentation:
+              text: `You are a helpful website optimization consultant. Use this documentation to answer:
 
 ${notionKnowledgeBase}
 
----
+Question: ${input}
 
-Client question: ${input}
-
-Provide a helpful, specific answer based on the documentation. Include links where relevant. Keep your response conversational and actionable.`
+Provide a helpful answer based on the documentation.`
             }]
           }]
         })
@@ -125,53 +98,49 @@ Provide a helpful, specific answer based on the documentation. Include links whe
 
   if (loadingNotion) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'linear-gradient(to bottom right, #f9fafb, #eff6ff)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#f3f4f6' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ width: '48px', height: '48px', border: '4px solid #2563eb', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }}></div>
-          <p style={{ color: '#4b5563' }}>Loading your knowledge base...</p>
+          <div style={{ width: '48px', height: '48px', border: '4px solid #3b82f6', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }}></div>
+          <p>Loading...</p>
         </div>
+        <style jsx>{`
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
     );
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'linear-gradient(to bottom right, #f9fafb, #eff6ff)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#f3f4f6' }}>
       <style jsx>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
         @keyframes bounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
         }
       `}</style>
 
-      <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '16px 24px', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
-        <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ width: '40px', height: '40px', background: 'linear-gradient(to bottom right, #3b82f6, #2563eb)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '20px' }}>
-            📚
-          </div>
-          <div>
-            <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', margin: 0 }}>Website Roadmap Assistant</h1>
-            <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>Ask me anything about your strategic roadmap</p>
-          </div>
+      <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '16px 24px' }}>
+        <div style={{ maxWidth: '896px', margin: '0 auto' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Website Roadmap Assistant</h1>
+          <p style={{ fontSize: '14px', color: '#6b7280', margin: '4px 0 0 0' }}>Ask me anything about your roadmap</p>
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '32px 24px' }}>
-        <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+        <div style={{ maxWidth: '896px', margin: '0 auto' }}>
           {messages.map((msg, idx) => (
-            <div key={idx} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+            <div key={idx} style={{ marginBottom: '16px', display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
               <div style={{
-                maxWidth: '768px',
-                borderRadius: '16px',
-                padding: '16px 20px',
-                background: msg.role === 'user' ? '#2563eb' : 'white',
+                maxWidth: '80%',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                background: msg.role === 'user' ? '#3b82f6' : 'white',
                 color: msg.role === 'user' ? 'white' : '#1f2937',
-                border: msg.role === 'user' ? 'none' : '1px solid #e5e7eb',
-                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
               }}>
-                <p style={{ fontSize: '14px', whiteSpace: 'pre-wrap', lineHeight: '1.6', margin: 0 }}>
+                <p style={{ margin: 0, whiteSpace: 'pre-wrap', fontSize: '14px', lineHeight: '1.5' }}>
                   {msg.content}
                 </p>
               </div>
@@ -179,12 +148,12 @@ Provide a helpful, specific answer based on the documentation. Include links whe
           ))}
           
           {loading && (
-            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: '16px', padding: '16px 20px', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '8px', height: '8px', background: '#93c5fd', borderRadius: '50%', animation: 'bounce 1s infinite' }}></div>
-                  <div style={{ width: '8px', height: '8px', background: '#93c5fd', borderRadius: '50%', animation: 'bounce 1s infinite 0.15s' }}></div>
-                  <div style={{ width: '8px', height: '8px', background: '#93c5fd', borderRadius: '50%', animation: 'bounce 1s infinite 0.3s' }}></div>
+            <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '16px' }}>
+              <div style={{ background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <div style={{ width: '8px', height: '8px', background: '#3b82f6', borderRadius: '50%', animation: 'bounce 1s infinite' }}></div>
+                  <div style={{ width: '8px', height: '8px', background: '#3b82f6', borderRadius: '50%', animation: 'bounce 1s infinite 0.2s' }}></div>
+                  <div style={{ width: '8px', height: '8px', background: '#3b82f6', borderRadius: '50%', animation: 'bounce 1s infinite 0.4s' }}></div>
                 </div>
               </div>
             </div>
@@ -192,48 +161,41 @@ Provide a helpful, specific answer based on the documentation. Include links whe
         </div>
       </div>
 
-      <div style={{ background: 'white', borderTop: '1px solid #e5e7eb', padding: '16px 24px', boxShadow: '0 -1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
-        <div style={{ maxWidth: '896px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask about your roadmap, tools, strategies, or specific steps..."
-              style={{
-                flex: 1,
-                padding: '12px 20px',
-                border: '1px solid #d1d5db',
-                borderRadius: '12px',
-                fontSize: '14px',
-                outline: 'none'
-              }}
-              disabled={loading}
-            />
-            <button
-              onClick={handleSend}
-              disabled={loading || !input.trim()}
-              style={{
-                padding: '12px 24px',
-                background: '#2563eb',
-                color: 'white',
-                borderRadius: '12px',
-                border: 'none',
-                cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
-                opacity: loading || !input.trim() ? 0.5 : 1,
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-            >
-              Send
-            </button>
-          </div>
-          
-          <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '12px', color: '#6b7280' }}>
-            <span>📚</span>
-            <span>Answers are based on your strategic roadmap documentation</span>
-          </div>
+      <div style={{ background: 'white', borderTop: '1px solid #e5e7eb', padding: '16px 24px' }}>
+        <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', gap: '8px' }}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+            placeholder="Ask a question..."
+            style={{
+              flex: 1,
+              padding: '12px',
+              border: '1px solid #d1d5db',
+              borderRadius: '8px',
+              fontSize: '14px',
+              outline: 'none'
+            }}
+            disabled={loading}
+          />
+          <button
+            onClick={handleSend}
+            disabled={loading || !input.trim()}
+            style={{
+              padding: '12px 24px',
+              background: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
+              opacity: loading || !input.trim() ? 0.5 : 1,
+              fontSize: '14px',
+              fontWeight: '600'
+            }}
+          >
+            Send
+          </button>
         </div>
       </div>
     </div>
