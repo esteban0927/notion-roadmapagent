@@ -10,12 +10,12 @@ export default async function handler(req, res) {
 
     const model = "gemini-2.5-flash";
 
-    const system = `
+    const instructions = `
 You are a website optimization consultant.
 
-You MUST decide whether the Notion knowledge base is enough to answer the user's question.
+Decide if the Notion knowledge base is enough to answer the question.
 
-Return ONLY valid JSON with this exact schema:
+Return ONLY valid JSON in this exact schema:
 {
   "route": "answer" | "handoff",
   "answer": string,
@@ -24,14 +24,14 @@ Return ONLY valid JSON with this exact schema:
 }
 
 Rules:
-- If the knowledge base contains enough info to answer confidently, set route="answer" and fill "answer".
-- If it is NOT enough, set route="handoff".
-- When route="handoff":
-  - answer should briefly explain what is missing (1-3 sentences).
-  - handoffPrompt should be a high quality prompt the user can paste into ChatGPT or Gemini.
-  - missingInfo should list what inputs are needed (example: ["website url", "platform", "main goal"]).
-- Never invent facts. If you don't know, route="handoff".
-- Keep the JSON clean: no markdown fences, no extra keys.
+- If you can give a useful, accurate answer based on the knowledge base, route="answer".
+- If the knowledge base is not enough, route="handoff".
+- For route="handoff", include:
+  - answer: 1-3 sentences explaining what’s missing
+  - handoffPrompt: a high-quality prompt the user can paste into ChatGPT or Gemini
+  - missingInfo: what you need from the user to proceed
+- Never invent facts. If unsure, choose route="handoff".
+- No markdown fences. No extra keys.
 `.trim();
 
     const r = await fetch(
@@ -44,7 +44,7 @@ Rules:
             {
               parts: [
                 {
-                  text: `${system}
+                  text: `${instructions}
 
 NOTION KNOWLEDGE BASE:
 ${notionKnowledgeBase || ""}
@@ -55,33 +55,35 @@ ${prompt}`,
               ],
             },
           ],
-          generationConfig: {
-            temperature: 0.3,
-          },
+          generationConfig: { temperature: 0.3 },
         }),
       }
     );
 
     const data = await r.json();
     if (!r.ok) {
+      console.error("Gemini request failed:", data);
       return res.status(r.status).json({ error: "Gemini request failed", details: data });
     }
 
     const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    let parsed;
 
+    let parsed;
     try {
       parsed = JSON.parse(rawText);
     } catch (e) {
-      // If the model returns non-JSON, fail gracefully
+      // If Gemini returns non-JSON, fall back to showing it as an answer
       return res.status(200).json({
         route: "answer",
         answer: rawText || "No response returned.",
+        handoffPrompt: "",
+        missingInfo: [],
       });
     }
 
     return res.status(200).json(parsed);
   } catch (e) {
+    console.error("Server error:", e);
     return res.status(500).json({ error: "Server error", details: String(e) });
   }
 }
