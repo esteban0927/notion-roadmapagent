@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 
 export default function NotionKnowledgeAgent() {
   const [messages, setMessages] = useState([
@@ -73,7 +74,6 @@ Create compelling landing pages with clear CTAs`;
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        // Show real server error details in console to make debugging easy
         console.log("API /api/gemini failed:", data);
 
         const msg =
@@ -208,16 +208,76 @@ Create compelling landing pages with clear CTAs`;
                   boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                 }}
               >
-                <p
-                  style={{
-                    margin: 0,
-                    whiteSpace: "pre-wrap",
-                    fontSize: "14px",
-                    lineHeight: "1.5",
-                  }}
-                >
-                  {msg.content}
-                </p>
+                <div style={{ fontSize: "14px", lineHeight: "1.5" }}>
+                  <ReactMarkdown
+                    // Keep it simple and safe: no raw HTML rendering
+                    components={{
+                      p: ({ children }) => (
+                        <p style={{ margin: 0 }}>{children}</p>
+                      ),
+                      strong: ({ children }) => (
+                        <strong>{children}</strong>
+                      ),
+                      em: ({ children }) => <em>{children}</em>,
+                      ul: ({ children }) => (
+                        <ul style={{ margin: "8px 0 0 18px" }}>{children}</ul>
+                      ),
+                      ol: ({ children }) => (
+                        <ol style={{ margin: "8px 0 0 18px" }}>{children}</ol>
+                      ),
+                      li: ({ children }) => (
+                        <li style={{ margin: "4px 0" }}>{children}</li>
+                      ),
+                      h1: ({ children }) => (
+                        <div style={{ fontWeight: 800, fontSize: "16px" }}>
+                          {children}
+                        </div>
+                      ),
+                      h2: ({ children }) => (
+                        <div style={{ fontWeight: 700, fontSize: "15px" }}>
+                          {children}
+                        </div>
+                      ),
+                      h3: ({ children }) => (
+                        <div style={{ fontWeight: 700, fontSize: "14px" }}>
+                          {children}
+                        </div>
+                      ),
+                      code: ({ children }) => (
+                        <code
+                          style={{
+                            fontFamily:
+                              "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                            fontSize: "13px",
+                            padding: "2px 6px",
+                            borderRadius: "6px",
+                            background:
+                              msg.role === "user"
+                                ? "rgba(255,255,255,0.18)"
+                                : "rgba(0,0,0,0.06)",
+                          }}
+                        >
+                          {children}
+                        </code>
+                      ),
+                      a: ({ href, children }) => (
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            color: msg.role === "user" ? "white" : "#2563eb",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          {children}
+                        </a>
+                      ),
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
               </div>
             </div>
           ))}
