@@ -59,7 +59,6 @@ Create compelling landing pages with clear CTAs`;
     setLoading(true);
 
     try {
-      // Call your own server route (pages/api/gemini.js)
       const response = await fetch("/api/gemini", {
         method: "POST",
         headers: {
@@ -71,13 +70,18 @@ Create compelling landing pages with clear CTAs`;
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
+        // Show real server error details in console to make debugging easy
+        console.log("API /api/gemini failed:", data);
+
         const msg =
-          data?.error ||
           data?.details?.error?.message ||
-          "Gemini API route failed";
+          data?.details?.error ||
+          data?.error ||
+          "Gemini request failed";
+
         throw new Error(msg);
       }
 
@@ -89,11 +93,13 @@ Create compelling landing pages with clear CTAs`;
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Gemini error:", error);
+
       const errorMessage = {
         role: "assistant",
         content:
-          "I encountered an error. Make sure /api/gemini exists and GEMINI_API_KEY is set in Vercel.",
+          "I hit an error calling Gemini. Check the browser console for the exact /api/gemini error details.",
       };
+
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setLoading(false);
