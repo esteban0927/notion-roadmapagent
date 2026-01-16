@@ -59,7 +59,7 @@ Create compelling landing pages with clear CTAs`;
     setLoading(true);
 
     try {
-      // Call YOUR serverless API route (which calls Gemini securely)
+      // Call your own server route (pages/api/gemini.js)
       const response = await fetch("/api/gemini", {
         method: "POST",
         headers: {
@@ -74,14 +74,11 @@ Create compelling landing pages with clear CTAs`;
       const data = await response.json();
 
       if (!response.ok) {
-        // If the API returns an error payload, show it nicely
-        const errText =
-          data?.error
-            ? typeof data.error === "string"
-              ? data.error
-              : JSON.stringify(data.error)
-            : "Unknown error";
-        throw new Error(errText);
+        const msg =
+          data?.error ||
+          data?.details?.error?.message ||
+          "Gemini API route failed";
+        throw new Error(msg);
       }
 
       const assistantMessage = {
@@ -91,14 +88,13 @@ Create compelling landing pages with clear CTAs`;
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
+      console.error("Gemini error:", error);
       const errorMessage = {
         role: "assistant",
         content:
-          "I encountered an error. Make sure /api/gemini is deployed and GEMINI_API_KEY is set in Vercel.",
+          "I encountered an error. Make sure /api/gemini exists and GEMINI_API_KEY is set in Vercel.",
       };
       setMessages((prev) => [...prev, errorMessage]);
-      // Optional: console for debugging
-      console.error("Gemini error:", error);
     } finally {
       setLoading(false);
     }
@@ -192,7 +188,8 @@ Create compelling landing pages with clear CTAs`;
               style={{
                 marginBottom: "16px",
                 display: "flex",
-                justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                justifyContent:
+                  msg.role === "user" ? "flex-end" : "flex-start",
               }}
             >
               <div
