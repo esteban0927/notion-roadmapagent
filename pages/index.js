@@ -85,12 +85,25 @@ Create compelling landing pages with clear CTAs`;
         throw new Error(msg);
       }
 
-      const assistantMessage = {
-        role: "assistant",
-        content: data?.text || "No response text returned.",
-      };
+      let content = data?.answer || data?.text || "No response text returned.";
 
-      setMessages((prev) => [...prev, assistantMessage]);
+if (data?.route === "handoff" && data?.handoffPrompt) {
+  content += `
+
+---
+
+Copy and paste this into ChatGPT or Gemini:
+
+${data.handoffPrompt}`;
+}
+
+const assistantMessage = {
+  role: "assistant",
+  content,
+};
+
+setMessages((prev) => [...prev, assistantMessage]);
+
     } catch (error) {
       console.error("Gemini error:", error);
 
