@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Send, BookOpen, ExternalLink } from 'lucide-react';
 
 export default function NotionKnowledgeAgent() {
   const [messages, setMessages] = useState([
@@ -24,15 +23,15 @@ export default function NotionKnowledgeAgent() {
       
       if (data.content && data.content.trim().length > 0) {
         setNotionKnowledgeBase(data.content);
-        console.log('✅ Loaded Notion content successfully');
+        console.log('Loaded Notion content successfully');
       } else {
         setNotionKnowledgeBase(getDemoContent());
-        console.log('⚠️ Using demo content - Notion not connected');
+        console.log('Using demo content - Notion not connected');
       }
     } catch (error) {
       console.error('Failed to load Notion content:', error);
       setNotionKnowledgeBase(getDemoContent());
-      console.log('⚠️ Using demo content - Connection failed');
+      console.log('Using demo content - Connection failed');
     } finally {
       setLoadingNotion(false);
     }
@@ -44,41 +43,25 @@ export default function NotionKnowledgeAgent() {
 ## Phase 1: Discovery & Audit
 
 ### Website Speed Analysis
-**Overview:** Analyze current page load times and identify bottlenecks.
-
-**Tools to use:**
+Tools to use:
 - Google PageSpeed Insights: https://pagespeed.web.dev
 - GTmetrix: https://gtmetrix.com
-
-**Action steps:**
-1. Run your homepage through all three tools
-2. Document your current speed score
-3. Identify the top 3 issues slowing down your site
-4. Prioritize fixes based on impact
 
 ## Phase 2: Foundation Optimization
 
 ### Technical SEO Fixes
-**Common issues to address:**
+Common issues to address:
 - Missing or duplicate meta descriptions
 - Broken internal links
 - Missing alt text on images
 
-**Tools:**
-- Google Search Console: https://search.google.com/search-console
-
 ## Phase 3: Conversion Optimization
 
 ### Landing Page Design
-**Key elements of high-converting landing pages:**
+Key elements of high-converting landing pages:
 - Clear, benefit-driven headline
-- Supporting subheadline
-- Hero image/video showing product in action
-- Primary CTA button (contrasting color)
-
-**Landing page tools:**
-- Unbounce: https://unbounce.com
-- Instapage: https://instapage.com`;
+- Strong CTA button
+- Social proof`;
   };
 
   const handleSend = async () => {
@@ -107,7 +90,6 @@ Your job is to:
 2. Provide specific action steps when asked
 3. Share relevant links and resources from the documentation
 4. Be encouraging and actionable
-5. If something isn't in the documentation, say so and offer general guidance
 
 Here is the complete documentation:
 
@@ -141,77 +123,68 @@ Provide a helpful, specific answer based on the documentation. Include links whe
     setLoading(false);
   };
 
-  const renderMessageContent = (content) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = content.split(urlRegex);
-    
-    return parts.map((part, index) => {
-      if (part.match(urlRegex)) {
-       return (
-  
-    key={index}
-    href={part}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline inline-flex items-center gap-1"
-          >
-            {part}
-            <ExternalLink className="w-3 h-3" />
-          </a>
-        );
-      }
-      return <span key={index}>{part}</span>;
-    });
-  };
-
   if (loadingNotion) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your knowledge base...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'linear-gradient(to bottom right, #f9fafb, #eff6ff)' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: '48px', height: '48px', border: '4px solid #2563eb', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }}></div>
+          <p style={{ color: '#4b5563' }}>Loading your knowledge base...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-            <BookOpen className="w-6 h-6 text-white" />
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'linear-gradient(to bottom right, #f9fafb, #eff6ff)' }}>
+      <style jsx>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+      `}</style>
+
+      <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '16px 24px', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+        <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ width: '40px', height: '40px', background: 'linear-gradient(to bottom right, #3b82f6, #2563eb)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '20px' }}>
+            📚
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">Website Roadmap Assistant</h1>
-            <p className="text-sm text-gray-600">Ask me anything about your strategic roadmap</p>
+            <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', margin: 0 }}>Website Roadmap Assistant</h1>
+            <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>Ask me anything about your strategic roadmap</p>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+      <div style={{ flex: 1, overflowY: 'auto', padding: '32px 24px' }}>
+        <div style={{ maxWidth: '896px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {messages.map((msg, idx) => (
-            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-3xl rounded-2xl px-5 py-4 ${
-                msg.role === 'user' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-white border border-gray-200 text-gray-800 shadow-sm'
-              }`}>
-                <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                  {msg.role === 'assistant' ? renderMessageContent(msg.content) : msg.content}
+            <div key={idx} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+              <div style={{
+                maxWidth: '768px',
+                borderRadius: '16px',
+                padding: '16px 20px',
+                background: msg.role === 'user' ? '#2563eb' : 'white',
+                color: msg.role === 'user' ? 'white' : '#1f2937',
+                border: msg.role === 'user' ? 'none' : '1px solid #e5e7eb',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+              }}>
+                <p style={{ fontSize: '14px', whiteSpace: 'pre-wrap', lineHeight: '1.6', margin: 0 }}>
+                  {msg.content}
                 </p>
               </div>
             </div>
           ))}
           
           {loading && (
-            <div className="flex justify-start">
-              <div className="bg-white border border-gray-200 rounded-2xl px-5 py-4 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: '16px', padding: '16px 20px', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ width: '8px', height: '8px', background: '#93c5fd', borderRadius: '50%', animation: 'bounce 1s infinite' }}></div>
+                  <div style={{ width: '8px', height: '8px', background: '#93c5fd', borderRadius: '50%', animation: 'bounce 1s infinite 0.15s' }}></div>
+                  <div style={{ width: '8px', height: '8px', background: '#93c5fd', borderRadius: '50%', animation: 'bounce 1s infinite 0.3s' }}></div>
                 </div>
               </div>
             </div>
@@ -219,67 +192,50 @@ Provide a helpful, specific answer based on the documentation. Include links whe
         </div>
       </div>
 
-      <div className="bg-white border-t border-gray-200 px-6 py-4 shadow-lg">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex gap-3">
+      <div style={{ background: 'white', borderTop: '1px solid #e5e7eb', padding: '16px 24px', boxShadow: '0 -1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+        <div style={{ maxWidth: '896px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', gap: '12px' }}>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Ask about your roadmap, tools, strategies, or specific steps..."
-              className="flex-1 px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              style={{
+                flex: 1,
+                padding: '12px 20px',
+                border: '1px solid #d1d5db',
+                borderRadius: '12px',
+                fontSize: '14px',
+                outline: 'none'
+              }}
               disabled={loading}
             />
             <button
               onClick={handleSend}
               disabled={loading || !input.trim()}
-              className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm"
+              style={{
+                padding: '12px 24px',
+                background: '#2563eb',
+                color: 'white',
+                borderRadius: '12px',
+                border: 'none',
+                cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
+                opacity: loading || !input.trim() ? 0.5 : 1,
+                fontSize: '14px',
+                fontWeight: '500'
+              }}
             >
-              <Send className="w-5 h-5" />
+              Send
             </button>
           </div>
           
-          <div className="mt-3 flex items-center justify-center gap-2 text-xs text-gray-500">
-            <BookOpen className="w-3 h-3" />
+          <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '12px', color: '#6b7280' }}>
+            <span>📚</span>
             <span>Answers are based on your strategic roadmap documentation</span>
           </div>
         </div>
       </div>
-
-      {messages.length === 1 && (
-        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-6">
-          <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl p-4 shadow-lg">
-            <p className="text-xs font-medium text-gray-600 mb-3">Try asking:</p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => setInput("How do I improve my website speed?")}
-                className="text-left text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors"
-              >
-                How do I improve my website speed?
-              </button>
-              <button
-                onClick={() => setInput("What should be on my landing page?")}
-                className="text-left text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors"
-              >
-                What should be on my landing page?
-              </button>
-              <button
-                onClick={() => setInput("How do I create a lead magnet?")}
-                className="text-left text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors"
-              >
-                How do I create a lead magnet?
-              </button>
-              <button
-                onClick={() => setInput("What metrics should I track?")}
-                className="text-left text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors"
-              >
-                What metrics should I track?
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
