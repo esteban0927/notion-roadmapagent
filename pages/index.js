@@ -147,10 +147,10 @@ Provide a helpful, specific answer based on the documentation. Include links whe
     
     return parts.map((part, index) => {
       if (part.match(urlRegex)) {
-        return (
-          
-            key={index}
-            href={part}
+       return (
+  
+    key={index}
+    href={part}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:text-blue-800 underline inline-flex items-center gap-1"
